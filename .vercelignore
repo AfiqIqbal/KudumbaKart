@@ -1,0 +1,29 @@
+# Ignore large directories
+HTMLDesign-eCommerce-Free-Templates-main/
+
+# Ignore virtual environment
+venv/
+
+# Ignore database files
+instance/
+*.db
+*.sqlite3
+
+# Ignore large static files
+static/images/products/
+
+# Keep only optimized images
+!static/images/products_optimized/
+
+# Ignore cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore git files
+.git/
+.gitignore
+
+# Ignore build files
+build_files.sh
+staticfiles/
