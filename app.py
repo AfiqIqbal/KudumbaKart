@@ -27,7 +27,13 @@ SMTP_PASSWORD = "sycl behk sqqp wiev"    # Use an App Password from Gmail
 
 # Database configuration
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance/kudumbakart.db')
+# Check if running on Vercel (production) or locally
+if 'VERCEL' in os.environ:
+    # Use SQLite for simplicity on Vercel
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kudumbakart.db'
+else:
+    # Use local SQLite database during development
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance/kudumbakart.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -599,13 +605,13 @@ def handle_message(message):
         print(f"Error in handle_message: {str(e)}")
         emit('message', "I apologize, but I encountered an error. Please try again.")
 
+# Initialize database
+with app.app_context():
+    if not os.path.exists('instance'):
+        os.makedirs('instance')
+    db.create_all()
+
 # Only run the application if this file is executed directly
 if __name__ == '__main__':
-    # Create the database tables
-    with app.app_context():
-        if not os.path.exists('instance'):
-            os.makedirs('instance')
-        db.create_all()
-    
-    # Run the application
+    # Run the application locally
     socketio.run(app, debug=True)
