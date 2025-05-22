@@ -1,0 +1,851 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section with Search -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-4 text-white mb-4">Welcome to KudumbaKart</h1>
+                    <p class="lead text-white mb-5">Discover authentic Kerala products from Kudumbashree units</p>
+                    
+                    <!-- Enhanced Search Form -->
+                    <div class="search-container bg-white p-4 rounded-lg shadow-lg mx-auto">
+                        <form action="{{ url_for('search') }}" method="get" class="mb-0">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <select name="type" class="form-select" id="searchType">
+                                        <option value="product">Search Products</option>
+                                        <option value="unit">Search Units</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" name="q" class="form-control" 
+                                           placeholder="Search for products or Kudumbashree units..." 
+                                           id="searchInput">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 75vh;
+    min-height: 500px;
+    max-height: 800px;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), 
+                url("{{ url_for('static', filename='images/hero/hero.jpg') }}") no-repeat center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.hero-content {
+    width: 100%;
+    z-index: 2;
+}
+
+/* Enhanced Search Styles */
+.search-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 800px;
+}
+
+.form-select, .form-control {
+    border: 1px solid #dee2e6;
+    height: 48px;
+    font-size: 1rem;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.btn-success {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 100vh;
+        padding: 1rem;
+    }
+    
+    .search-container {
+        padding: 1.5rem !important;
+    }
+    
+    .form-select, .form-control, .btn-success {
+        height: 45px;
+    }
+    
+    .row.g-3 > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    h1.display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .lead {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .search-container {
+        margin: 0 1rem;
+    }
+    
+    h1.display-4 {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<!-- Featured Products -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">Featured Products</h2>
+    <div id="featuredProducts" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for i in range(0, products.items|length, 3) %}
+            <div class="carousel-item {% if i == 0 %}active{% endif %}">
+                <div class="row">
+                    {% for product in products.items[i:i+3] %}
+                    <div class="col-md-4">
+                        <div class="card h-100 product-card">
+                            <div class="card-img-container">
+                                <img src="{{ url_for('static', filename=product.image_url) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ product.name }}">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text text-muted">{{ product.description[:100] }}...</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">₹{{ "%.2f"|format(product.price) }}</h6>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                                           class="btn btn-sm btn-outline-success">View Details</a>
+                                        {% if current_user.is_authenticated %}
+                                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" 
+                                              method="POST" 
+                                              class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="fas fa-cart-plus"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#featuredProducts" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featuredProducts" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">Shop by Category</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card category-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-utensils fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Food & Spices</h5>
+                    <p class="card-text">Traditional Kerala cuisine essentials</p>
+                    <a href="{{ url_for('products', category='food') }}" class="btn btn-outline-success">Browse</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card category-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-tshirt fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Handlooms</h5>
+                    <p class="card-text">Authentic Kerala handloom products</p>
+                    <a href="{{ url_for('products', category='handlooms') }}" class="btn btn-outline-success">Browse</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card category-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-spa fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Ayurveda</h5>
+                    <p class="card-text">Natural wellness products</p>
+                    <a href="{{ url_for('products', category='ayurveda') }}" class="btn btn-outline-success">Browse</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card category-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-home fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">Home & Living</h5>
+                    <p class="card-text">Handcrafted home essentials</p>
+                    <a href="{{ url_for('products', category='home') }}" class="btn btn-outline-success">Browse</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Kudumbashree Section -->
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2 class="mb-4">About Kudumbashree</h2>
+            <p class="lead text-muted">Empowering Women, Enriching Communities</p>
+            <p>Kudumbashree is Kerala's innovative women-based poverty eradication mission, transforming lives through community action and entrepreneurship.</p>
+            <div class="row g-4 mt-3">
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-users fa-2x text-success me-3"></i>
+                        <div>
+                            <h4 class="mb-0">45+ Lakh</h4>
+                            <p class="text-muted mb-0">Women Entrepreneurs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-home fa-2x text-success me-3"></i>
+                        <div>
+                            <h4 class="mb-0">300K+</h4>
+                            <p class="text-muted mb-0">NHG Units</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="about-image-container">
+                <div class="about-image-overlay"></div>
+                <img src="{{ url_for('static', filename='images/women.jpg') }}" alt="Kudumbashree Women" class="about-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Section Styles -->
+<style>
+.about-image-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.about-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+    filter: brightness(0.85);
+}
+
+.about-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+    z-index: 1;
+}
+
+.about-image-container:hover .about-image {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .about-image-container {
+        height: 300px;
+        margin-top: 2rem;
+    }
+}
+</style>
+
+<!-- Featured Categories with Images -->
+<div class="container-fluid bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Product Categories</h2>
+        <div class="row g-4">
+            <!-- Food and Spices -->
+            <div class="col-md-6 col-lg-3">
+                <div class="category-card">
+                    <div class="category-image-container">
+                        <div class="category-image-overlay"></div>
+                        <img src="{{ url_for('static', filename='images/Product Categories/food and spices.jpg') }}" alt="Food and Spices" class="category-image">
+                    </div>
+                    <div class="category-content">
+                        <h3>Food & Spices</h3>
+                        <p>Traditional Kerala spices and food products</p>
+                        <a href="#" class="btn btn-outline-light">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Handloom -->
+            <div class="col-md-6 col-lg-3">
+                <div class="category-card">
+                    <div class="category-image-container">
+                        <div class="category-image-overlay"></div>
+                        <img src="{{ url_for('static', filename='images/Product Categories/handlooms.jpg') }}" alt="Handloom Products" class="category-image">
+                    </div>
+                    <div class="category-content">
+                        <h3>Handloom</h3>
+                        <p>Traditional Kerala handloom products</p>
+                        <a href="#" class="btn btn-outline-light">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kitchen Utensils -->
+            <div class="col-md-6 col-lg-3">
+                <div class="category-card">
+                    <div class="category-image-container">
+                        <div class="category-image-overlay"></div>
+                        <img src="{{ url_for('static', filename='images/Product Categories/kitchen utensils.jpg') }}" alt="Kitchen Utensils" class="category-image">
+                    </div>
+                    <div class="category-content">
+                        <h3>Kitchen Utensils</h3>
+                        <p>Traditional Kerala kitchen tools</p>
+                        <a href="#" class="btn btn-outline-light">Explore</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Handicrafts -->
+            <div class="col-md-6 col-lg-3">
+                <div class="category-card">
+                    <div class="category-image-container">
+                        <div class="category-image-overlay"></div>
+                        <img src="{{ url_for('static', filename='images/Product Categories/handicrafts.jpg') }}" alt="Handicrafts" class="category-image">
+                    </div>
+                    <div class="category-content">
+                        <h3>Handicrafts</h3>
+                        <p>Traditional Kerala handicrafts</p>
+                        <a href="#" class="btn btn-outline-light">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Category Card Styles */
+.category-card {
+    position: relative;
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.category-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    z-index: 1;
+}
+
+.category-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    color: white;
+    z-index: 2;
+}
+
+.category-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.category-content p {
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.category-card:hover .category-image {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .category-card {
+        height: 250px;
+    }
+}
+</style>
+
+<!-- Why Choose Us Section with More Details -->
+<div class="container py-5">
+    <h2 class="text-center mb-5">Why Choose KudumbaKart?</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-hand-holding-heart fa-3x text-success"></i>
+                </div>
+                <h4>Support Local Communities</h4>
+                <p class="text-muted">Every purchase directly supports Kudumbashree women entrepreneurs and their families, contributing to local economic growth.</p>
+                <ul class="list-unstyled mt-3">
+                    <li><i class="fas fa-check text-success me-2"></i>Direct community impact</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Women empowerment</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Sustainable development</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-certificate fa-3x text-success"></i>
+                </div>
+                <h4>Quality Assurance</h4>
+                <p class="text-muted">All products undergo strict quality checks and are certified by relevant authorities to ensure authentic Kerala products.</p>
+                <ul class="list-unstyled mt-3">
+                    <li><i class="fas fa-check text-success me-2"></i>Quality certified</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Traditional methods</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Authentic ingredients</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-truck fa-3x text-success"></i>
+                </div>
+                <h4>Reliable Delivery</h4>
+                <p class="text-muted">Experience hassle-free shopping with our efficient delivery network covering all districts in Kerala.</p>
+                <ul class="list-unstyled mt-3">
+                    <li><i class="fas fa-check text-success me-2"></i>Fast delivery</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Secure packaging</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Order tracking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Join Us Section -->
+<div class="container-fluid bg-success py-4 text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="mb-3">Are you a Kudumbashree Unit?</h3>
+                <p class="lead mb-3">Join our platform to showcase your products to a wider audience.</p>
+                <div class="seller-benefits">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Easy registration process</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Dedicated seller dashboard</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Marketing support</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end text-center mt-4 mt-lg-0">
+                <a href="/register?seller=1" class="btn btn-light register-seller-btn">
+                    <i class="fas fa-store me-2"></i>Register as Seller
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="container-fluid bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Why Choose Us</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-hand-holding-heart fa-3x mb-3 text-success"></i>
+                    <h4>Support Local Communities</h4>
+                    <p>Empower Kudumbashree units and local artisans</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-certificate fa-3x mb-3 text-success"></i>
+                    <h4>Authentic Products</h4>
+                    <p>Genuine Kerala products with quality assurance</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-truck fa-3x mb-3 text-success"></i>
+                    <h4>Fast Delivery</h4>
+                    <p>Quick and reliable delivery across Kerala</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+.hero-section {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-top: -1.5rem;
+}
+
+.hero-image-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    filter: brightness(0.7);
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1;
+}
+
+.hero-content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-container {
+    margin-top: 2rem;
+}
+
+.form-control-lg {
+    height: 50px;
+    font-size: 1.1rem;
+}
+
+.btn-lg {
+    height: 50px;
+    width: 50px;
+}
+
+.product-card {
+    transition: transform 0.2s;
+    margin-bottom: 1rem;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-img-container {
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-card {
+    transition: transform 0.2s;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Carousel Customization */
+.carousel {
+    padding: 0 50px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 40px;
+    background-color: rgba(40, 167, 69, 0.2);
+    border-radius: 50%;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.carousel-control-prev {
+    left: 0;
+}
+
+.carousel-control-next {
+    right: 0;
+}
+
+.carousel-item {
+    padding: 1rem;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(25%) sepia(98%) saturate(1000%) hue-rotate(93deg) brightness(88%) contrast(107%);
+}
+
+@media (max-width: 768px) {
+    .hero-image-container {
+        height: 400px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-image-container {
+        height: 300px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Category Card New Style */
+.category-card-new {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.category-img-container {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.category-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    transition: background 0.3s ease;
+}
+
+.category-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.category-card-new:hover img {
+    transform: scale(1.1);
+}
+
+.category-card-new:hover .category-overlay {
+    background: rgba(40, 167, 69, 0.7);
+}
+
+/* Feature Card Style */
+.feature-card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 50%;
+}
+
+/* Join Us Section Styles */
+.seller-benefits {
+    font-size: 1rem;
+}
+
+.seller-benefits i {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.register-seller-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+.register-seller-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    color: #28a745;
+}
+
+@media (max-width: 991px) {
+    .seller-benefits {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Stats Counter Animation */
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count {
+    animation: countUp 1s ease-out forwards;
+}
+</style>
+
+<!-- Initialize carousel with auto-scroll -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var myCarousel = new bootstrap.Carousel(document.getElementById('featuredProducts'), {
+        interval: 5000,  // Auto-scroll every 5 seconds
+        wrap: true,      // Continuous loop
+        keyboard: true   // Keyboard controls
+    });
+});
+</script>
+
+<!-- Initialize number animation -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add animation class when elements come into view
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-count');
+            }
+        });
+    });
+
+    document.querySelectorAll('.feature-card').forEach((el) => observer.observe(el));
+});
+</script>
+{% endblock %}

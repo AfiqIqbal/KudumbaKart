@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active">My Orders</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">My Orders</h2>
+
+    {% if orders %}
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Order #{{ order.id }}</h5>
+                            <small class="text-muted">Placed on {{ order.created_at.strftime('%B %d, %Y') }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-{{ 'success' if order.status == 'confirmed' else 'warning' }}">
+                                {{ order.status|title }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6 class="mb-3">Items</h6>
+                            {% for item in order.items %}
+                            <div class="d-flex mb-2">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ url_for('static', filename=item.product.image_path) }}" 
+                                         alt="{{ item.product.name }}" 
+                                         class="order-item-image">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">{{ item.product.name }}</h6>
+                                    <small class="text-muted">
+                                        Quantity: {{ item.quantity }} × ₹{{ "%.2f"|format(item.price) }}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="text-success">₹{{ "%.2f"|format(item.quantity * item.price) }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="mb-3">Order Details</h6>
+                            <div class="mb-3">
+                                <strong>Shipping Address:</strong><br>
+                                {{ order.shipping_address }}<br>
+                                {{ order.shipping_city }}, {{ order.shipping_state }}<br>
+                                PIN: {{ order.shipping_pincode }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Contact:</strong><br>
+                                {{ order.contact_number }}
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>₹{{ "%.2f"|format(order.total_amount - 50) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span>₹50.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total</strong>
+                                <strong class="text-success">₹{{ "%.2f"|format(order.total_amount) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+        <h4>No orders yet</h4>
+        <p class="text-muted">Start shopping to place your first order!</p>
+        <a href="{{ url_for('index') }}" class="btn btn-success">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.order-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+</style>
+{% endblock %}

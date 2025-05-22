@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .unit-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 2rem 2rem;
+    }
+    
+    .unit-info {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: -5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .contact-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .contact-info p {
+        margin-bottom: 0.5rem;
+    }
+    
+    .products-section {
+        padding: 2rem 0;
+    }
+    
+    .product-card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 1rem 1rem 0 0;
+    }
+    
+    .back-link {
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link:hover {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .no-products {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .no-products i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="unit-header">
+    <div class="container">
+        <a href="{{ url_for('index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Homepage
+        </a>
+        <h1 class="display-4">{{ unit.name }}</h1>
+        <p class="lead mb-0">
+            <i class="fas fa-map-marker-alt"></i> 
+            {{ unit.district }}, {{ unit.panchayat }}
+            {% if unit.ward %}
+            (Ward {{ unit.ward }})
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="unit-info">
+        {% if unit.description %}
+        <p class="lead">{{ unit.description }}</p>
+        {% endif %}
+        
+        <div class="contact-info">
+            <h4><i class="fas fa-info-circle"></i> Contact Information</h4>
+            {% if unit.contact_number %}
+            <p><i class="fas fa-phone"></i> {{ unit.contact_number }}</p>
+            {% endif %}
+            <p><i class="fas fa-map-marked-alt"></i> {{ unit.district }}, {{ unit.panchayat }}</p>
+        </div>
+    </div>
+    
+    <div class="products-section">
+        <h2 class="mb-4">Products from {{ unit.name }}</h2>
+        
+        {% if products %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card">
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/product-placeholder.jpg') }}" 
+                         class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description[:100] }}...</p>
+                        <p class="card-text">
+                            <strong>₹{{ "%.2f"|format(product.price) }}</strong>
+                        </p>
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                           class="btn btn-primary stretched-link">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-products">
+            <i class="fas fa-box-open"></i>
+            <h3>No Products Available</h3>
+            <p class="text-muted">This unit hasn't added any products yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

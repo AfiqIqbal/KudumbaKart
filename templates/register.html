@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Register</h2>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="is_seller" name="is_seller" {% if is_seller %}checked{% endif %}>
+                                <label class="form-check-label" for="is_seller">Register as a Seller</label>
+                            </div>
+                        </div>
+                        <div class="seller-details" style="display: {% if is_seller %}block{% else %}none{% endif %};">
+                            <div class="mb-3">
+                                <label for="business_name" class="form-label">Business Name</label>
+                                <input type="text" class="form-control" id="business_name" name="business_name" {% if is_seller %}required{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" {% if is_seller %}required{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Business Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="3" {% if is_seller %}required{% endif %}></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="gst_number" class="form-label">GST Number (Optional)</label>
+                                <input type="text" class="form-control" id="gst_number" name="gst_number">
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Register</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="{{ url_for('login') }}" class="text-success">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.getElementById('is_seller').addEventListener('change', function() {
+    const sellerDetails = document.querySelector('.seller-details');
+    sellerDetails.style.display = this.checked ? 'block' : 'none';
+    
+    const sellerInputs = sellerDetails.querySelectorAll('input, textarea');
+    sellerInputs.forEach(input => {
+        if (input.id !== 'gst_number') {  // GST is optional
+            input.required = this.checked;
+        }
+    });
+});
+
+// Initialize seller fields if checkbox is checked on page load
+if (document.getElementById('is_seller').checked) {
+    const sellerInputs = document.querySelector('.seller-details').querySelectorAll('input, textarea');
+    sellerInputs.forEach(input => {
+        if (input.id !== 'gst_number') {  // GST is optional
+            input.required = true;
+        }
+    });
+}
+</script>
+{% endblock %}
+{% endblock %}

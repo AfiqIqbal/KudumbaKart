@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="mb-3">Order Confirmed!</h2>
+                    <p class="lead mb-4">Thank you for shopping with KudumbaKart</p>
+                    <div class="order-details text-start p-4 bg-light rounded">
+                        <h4 class="mb-3">Order Details</h4>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Order ID:</strong></div>
+                            <div class="col-sm-8">{{ order.id }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Order Date:</strong></div>
+                            <div class="col-sm-8">{{ order.date_ordered.strftime('%B %d, %Y') }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Total Amount:</strong></div>
+                            <div class="col-sm-8">₹{{ "%.2f"|format(order.total_amount) }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4"><strong>Shipping Address:</strong></div>
+                            <div class="col-sm-8">{{ order.shipping_address }}</div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-sm-4"><strong>Status:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="badge bg-success">{{ order.status.title() }}</span>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Ordered Items</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>₹{{ "%.2f"|format(item.price) }}</td>
+                                        <td>₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-success me-2">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.order-details {
+    background-color: #f8f9fa;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f1f1f1;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+</style>
+{% endblock %}

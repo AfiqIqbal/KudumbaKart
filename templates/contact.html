@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Contact Us</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-4">Send us a Message</h2>
+                    <form action="{{ url_for('contact') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Contact Information</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-phone text-success me-2"></i>
+                            <strong>Phone:</strong><br>
+                            +91 98765 43210
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-envelope text-success me-2"></i>
+                            <strong>Email:</strong><br>
+                            info@kudumbakart.com
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt text-success me-2"></i>
+                            <strong>Address:</strong><br>
+                            KudumbaKart Office<br>
+                            Kerala, India
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-clock text-success me-2"></i>
+                            <strong>Business Hours:</strong><br>
+                            Monday - Saturday<br>
+                            9:00 AM - 6:00 PM
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Connect With Us</h3>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-success fs-4"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-success fs-4"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-success fs-4"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-success fs-4"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

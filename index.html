@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>KudumbaKart</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">KudumbaKart</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+                <input type="text" placeholder="Search products..." class="form-control w-25 d-inline-block ml-3">
+                <div class="cart-icon d-inline-block ml-3">🛒 <span class="cart-count">0</span></div>
+            </div>
+        </div>
+    </nav>
+    <header class="hero bg-primary text-white text-center" style="padding: 100px 0;">
+        <div class="container">
+            <h1 class="display-4">Empowering Local Businesses</h1>
+            <p class="lead">Shop high-quality, locally made goods.</p>
+            <a href="#" class="btn btn-light btn-lg">Shop Now</a>
+        </div>
+    </header>
+    <div class="container mt-5">
+        <div class="row">
+            <aside class="col-md-3 sidebar p-3 bg-light">
+                <h3>Categories</h3>
+                <ul class="list-unstyled">
+                    <li><a href="#">Category 1</a></li>
+                    <li><a href="#">Category 2</a></li>
+                    <li><a href="#">Category 3</a></li>
+                </ul>
+            </aside>
+            <main class="col-md-9">
+                <section class="filters mb-4">
+                    <h3>Filters</h3>
+                    <label for="price-range">Price Range:</label>
+                    <input type="range" id="price-range" min="0" max="100" value="50">
+                    <label for="popularity">Popularity:</label>
+                    <select id="popularity" class="form-control">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </section>
+                <section class="featured-products">
+                    <h2>Featured Products</h2>
+                    <div class="row">
+                        <!-- Product items will be dynamically added here -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image">
+                                <div class="card-body">
+                                    <h5 class="card-title">Product Name</h5>
+                                    <p class="card-text">Description of the product.</p>
+                                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <footer class="bg-light text-center p-3 mt-4">
+        <p>&copy; 2025 KudumbaKart. All rights reserved.</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

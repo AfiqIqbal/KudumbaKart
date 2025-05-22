@@ -1,0 +1,14 @@
+Flask==2.2.5
+Flask-SQLAlchemy==3.0.2
+Flask-Login==0.6.2
+Flask-Migrate==4.0.4
+Flask-WTF==1.1.1
+Flask-SocketIO==5.3.6
+Pillow==9.4.0
+python-dotenv==1.0.0
+email-validator==2.0.0
+werkzeug==2.2.3
+ollama==0.4.7
+langchain==0.3.22
+faiss-cpu==1.7.4
+sentence-transformers==2.5.1

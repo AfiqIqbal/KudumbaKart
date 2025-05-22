@@ -1,0 +1,31 @@
+KUDUMBAKART
+Abstract:
+This project addresses a critical need in connecting local Kudumbashree units with a broader
+customer base. Kudumbashree units, which often produce high-quality, locally made goods, face
+significant challenges in reaching a wider market due to limited exposure and access to digital
+platforms. These units play a vital role in local economies by empowering women entrepreneurs,
+promoting sustainable practices, and fostering community-based businesses. However, their
+products are not easily accessible to a larger customer base, both locally and globally.
+This platform aims to bridge this gap by providing a digital marketplace where each Kudumbashree
+unit can register as an authorized seller and showcase their goods. Customers, both local and global,
+will have the opportunity to browse, select, and purchase products directly from these units, thus
+promoting local businesses and providing them with the visibility they need to thrive. The platform
+ensures transparency and trust by verifying each seller, thereby offering customers a reliable
+shopping experience.
+The necessity of this project is underscored by the growing demand for local, sustainable, and
+handmade products. In an era where consumers are increasingly interested in supporting small-scale
+and eco-friendly businesses, this project provides a much-needed solution to connect local sellers
+with a global audience. Moreover, by expanding the market for Kudumbashree products, the project
+contributes to economic empowerment and poverty alleviation in the community.
+In the future, the project envisions enhancements such as drone delivery for more efficient and
+faster local shipping, ensuring customers receive their products quickly and cost-effectively.
+Additionally, integrating voice-activated stock updates for sellers will simplify inventory
+management and improve operational efficiency, making it easier for Kudumbashree units to
+manage their product listings in real time.
+By providing a digital platform for these local enterprises, the project empowers Kudumbashree
+units to scale their operations, enhances their market reach, and ultimately contributes to sustainable
+economic growth and social development within local communities.
+SUBMITTED BY
+AFIQ IQBAL K
+NANDHANA K P
+AKSHARA NAIR

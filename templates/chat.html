@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">KudumbaKart Assistant</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chat-messages" class="mb-3" style="height: 400px; overflow-y: auto;">
+                        <!-- Chat messages will appear here -->
+                    </div>
+                    <form id="chat-form" class="d-flex">
+                        <input type="text" id="message-input" class="form-control me-2" placeholder="Type your message...">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Initializing chat...');
+        
+        // Initialize Socket.IO with error handling
+        const socket = io({
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000
+        });
+
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+
+        function appendMessage(data, isUser = false) {
+            console.log('Appending message:', data, 'isUser:', isUser);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'} mb-2`;
+            messageDiv.style.textAlign = isUser ? 'right' : 'left';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `p-2 rounded ${isUser ? 'bg-primary text-white' : 'bg-light'}`;
+            contentDiv.style.display = 'inline-block';
+            contentDiv.style.maxWidth = '80%';
+            contentDiv.style.wordBreak = 'break-word';
+            
+            // Handle both string and object messages
+            let messageText = '';
+            if (typeof data === 'string') {
+                messageText = data;
+            } else if (data.message) {
+                messageText = data.message;
+                
+                // Add error styling if status is error
+                if (data.status === 'error') {
+                    contentDiv.classList.remove('bg-light');
+                    contentDiv.classList.add('bg-danger', 'text-white');
+                }
+            } else {
+                messageText = JSON.stringify(data);
+            }
+            
+            contentDiv.textContent = messageText;
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Socket.IO event handlers
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            appendMessage({ message: 'Connected to chat server' }, false);
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            appendMessage({ status: 'error', message: 'Connection error: ' + error.message }, false);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            appendMessage({ status: 'error', message: 'Disconnected from server' }, false);
+        });
+
+        socket.on('message', (data) => {
+            console.log('Received message:', data);
+            appendMessage(data, false);
+        });
+
+        // Form submission
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            console.log('Sending message:', message);
+            
+            if (message) {
+                // Display user message
+                appendMessage(message, true);
+                
+                // Send message to server
+                socket.emit('message', { message: message }, (error) => {
+                    if (error) {
+                        console.error('Error sending message:', error);
+                        appendMessage({ status: 'error', message: 'Error sending message: ' + error }, false);
+                    }
+                });
+                
+                // Clear input
+                messageInput.value = '';
+            }
+        });
+    });
+</script>
+
+<style>
+    .chat-message {
+        margin-bottom: 10px;
+    }
+    .chat-message.bot {
+        text-align: left;
+    }
+    .chat-message.user {
+        text-align: right;
+    }
+    #chat-messages::-webkit-scrollbar {
+        width: 5px;
+    }
+    #chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    #chat-messages::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    #chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+{% endblock %}
+{% endblock %}
